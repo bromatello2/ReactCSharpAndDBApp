@@ -40,6 +40,16 @@ app.UseAuthorization();
 // Map the Razor Pages endpoints
 app.MapRazorPages();
 
+// Minimal API endpoint to return locations as JSON for the client-side React app
+app.MapGet("/api/locations", async (AppDbContext db) =>
+{
+    var list = await db.locations
+        .Select(l => new { l.Id, l.Name, l.Latitude, l.Longitude, l.Description })
+        .ToListAsync();
+
+    return Results.Json(list);
+});
+
 // Fallback for simple home page access
 app.MapGet("/", context =>
 {

@@ -12,5 +12,8 @@ namespace ReactCSharpAndDBApp.Data
 
         // A DbSet represents a collection of DataRecord objects that can be queried from the database.
         public DbSet<DataRecord> test_data_records { get; set; } = default!;
+
+        // Locations table mapping
+        public DbSet<ReactCSharpAndDBApp.Models.Location> locations { get; set; } = default!;
     }
 }
