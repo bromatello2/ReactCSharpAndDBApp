@@ -1,0 +1,23 @@
+#Built-in VS Code files
+.vscode/
+#Project output directories
+Binaries and build output
+[Bb]in/
+[Oo]bj/
+#Database artifacts
+*.db
+*.sqlite
+*.mdf
+*.ldf
+#.NET tool and dependencies
+.config/
+.vs/
+.history/
+packages/
+publish/
+node_modules/
+#User secrets (connection strings, passwords, etc.)
+#IMPORTANT: This prevents your MySQL password from being uploaded to GitHub!
+appsettings.Development.json
+appsettings.Production.json
+appsettings.json

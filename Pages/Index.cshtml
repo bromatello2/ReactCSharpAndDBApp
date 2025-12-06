@@ -1,0 +1,47 @@
+@page
+@model ReactCSharpAndDBApp.Pages.IndexModel
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ReactCSharpAndDBApp - Home</title>
+</head>
+<body>
+  <h1>@Model.Message</h1>
+  <p>Environment: @Model.Environment</p>
+
+  @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+  {
+    <div style="color:darkred">
+      <strong>Database error:</strong> @Model.ErrorMessage
+    </div>
+  }
+  else if (Model.Records == null || !Model.Records.Any())
+  {
+    <p>No records found in the database.</p>
+  }
+  else
+  {
+    <table border="1" cellpadding="6" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>BirthDate</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var r in Model.Records)
+        {
+          <tr>
+            <td>@r.Id</td>
+            <td>@r.Name</td>
+            <td>@r.BirthDate.ToString("yyyy-MM-dd")</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</body>
+</html>
