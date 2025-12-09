@@ -14,6 +14,6 @@ namespace ReactCSharpAndDBApp.Data
         public DbSet<DataRecord> test_data_records { get; set; } = default!;
 
         // Locations table mapping
-        public DbSet<ReactCSharpAndDBApp.Models.Location> locations { get; set; } = default!;
+        public DbSet<ReactCSharpAndDBApp.Models.Location> Locations { get; set; } = default!;
     }
 }
