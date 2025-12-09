@@ -1,29 +1,46 @@
 @page
-@model LocationsModel
+@model ReactCSharpAndDBApp.Pages.LocationsModel
 @{
     // Razor Page configuration for the title
-    ViewData["Title"] = "Global Locations";
+    ViewData["Title"] = "WOW Locations";
 }
 
-<!-- Load Tailwind CSS (Assuming your project uses it or you have included it globally) -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- The root element where React will mount the application -->
-<div id="locations_root">
-    <!-- Optional: Add a simple loading spinner here -->
-    <div class="text-center p-20">
-        <svg class="animate-spin h-8 w-8 text-indigo-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <p class="text-gray-500 mt-3">Loading React Application...</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WOW Locations</title>
+    <!-- Leaflet CSS for mapping -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #333; }
+        #map { height: 600px; width: 100%; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .locations-list { margin-top: 30px; }
+        .location-card { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #0066cc; }
+        .location-card h3 { margin: 0 0 10px 0; color: #0066cc; }
+        .location-card p { margin: 5px 0; color: #666; }
+        .loading { text-align: center; padding: 40px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WOW Locations</h1>
+        <p>Explore our locations on the map below:</p>
+        
+        <div id="loading" class="loading">Loading locations...</div>
+        <div id="map" style="display: none;"></div>
+        
+        <div class="locations-list">
+            <h2>Location Details</h2>
+            <div id="locations-details"></div>
+        </div>
     </div>
-</div>
 
-<!-- Load React and ReactDOM from CDN -->
-<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-
-<!-- Load the React application script (use a compiled JS bundle) -->
-<!-- Place the compiled bundle at wwwroot/js/locations.js -->
-<script src="~/js/locations.js" type="module"></script>
+    <!-- Load the plain JavaScript application -->
+    <script src="~/js/locationMap.js"></script>
+</body>
+</html>

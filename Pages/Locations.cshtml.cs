@@ -21,7 +21,7 @@ namespace ReactCSharpAndDBApp.Pages
         {
             try
             {
-                Locations = await _db.locations.AsNoTracking().ToListAsync();
+                Locations = await _db.Locations.AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
