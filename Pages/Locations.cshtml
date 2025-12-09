@@ -1,46 +1,108 @@
 @page
 @model ReactCSharpAndDBApp.Pages.LocationsModel
 @{
-    // Razor Page configuration for the title
     ViewData["Title"] = "WOW Locations";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>WOW Locations</title>
-    <!-- Leaflet CSS for mapping -->
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { color: #333; }
-        #map { height: 600px; width: 100%; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .locations-list { margin-top: 30px; }
-        .location-card { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #0066cc; }
-        .location-card h3 { margin: 0 0 10px 0; color: #0066cc; }
-        .location-card p { margin: 5px 0; color: #666; }
-        .loading { text-align: center; padding: 40px; color: #999; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background:#f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { color: #0066cc; text-align: center; margin-bottom: 10px; }
+        #map { height: 600px; width: 100%; margin: 25px 0; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .locations-list { margin-top: 40px; }
+        .location-card { background: #f8f9fa; padding: 18px; margin: 12px 0; border-radius: 10px; border-left: 6px solid #0066cc; }
+        .location-card h3 { margin: 0 0 10px 0; color: #0066cc; font-size: 1.3em; }
+        .error { color: #d63031; text-align: center; padding: 20px; background: #ffeaa7; border-radius: 8px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>WOW Locations</h1>
-        <p>Explore our locations on the map below:</p>
-        
-        <div id="loading" class="loading">Loading locations...</div>
-        <div id="map" style="display: none;"></div>
-        
-        <div class="locations-list">
-            <h2>Location Details</h2>
-            <div id="locations-details"></div>
-        </div>
+        <p style="text-align:center; color:#555;">
+            @(Model.Locations.Any() 
+                ? $"We have {Model.Locations.Count} location{(Model.Locations.Count == 1 ? "" : "s")} in the database:" 
+                : "No locations found.")
+        </p>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="error">Database Error: @Model.ErrorMessage</div>
+        }
+        else if (Model.Locations.Any())
+        {
+            <div id="map"></div>
+
+            <div class="locations-list">
+                <h2>Location Details</h2>
+                @foreach (var loc in Model.Locations)
+                {
+                    <div class="location-card">
+                        <h3>@(string.IsNullOrEmpty(loc.Name) ? "Unnamed Location" : loc.Name)</h3>
+                        @if (!string.IsNullOrEmpty(loc.Description))
+                        {
+                            <p>@loc.Description</p>
+                        }
+                        <p>
+                            <small>
+                                <strong>Lat:</strong> @($"{loc.Latitude:F5}")  
+                                <strong>Lng:</strong> @($"{loc.Longitude:F5}")
+                            </small>
+                        </p>
+                    </div>
+                }
+            </div>
+        }
     </div>
 
-    <!-- Load the plain JavaScript application -->
-    <script src="~/js/locationMap.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        @if (Model.Locations.Any())
+        {
+            <text>
+            (function () {
+                'use strict';
+
+                const map = L.map('map').setView([51.47, -2.59], 10);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(map);
+
+                const locations = @Html.Raw(Json.Serialize(Model.Locations));
+                const bounds = L.latLngBounds();
+
+                locations.forEach(loc => {
+                    const lat = parseFloat(loc.latitude);
+                    const lng = parseFloat(loc.longitude);
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        const marker = L.marker([lat, lng]).addTo(map);
+                        marker.bindPopup(`
+                            <div style="font-family:Arial,sans-serif;">
+                                <b style="color:#0066cc;">${loc.name || 'Unnamed Location'}</b><br>
+                                ${loc.description ? '<small>' + loc.description + '</small>' : ''}
+                                <hr style="margin:8px 0">
+                                <small>${lat.toFixed(5)}, ${lng.toFixed(5)}</small>
+                            </div>
+                        `);
+                        bounds.extend([lat, lng]);
+                    }
+                });
+
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds, { padding: [60, 60], maxZoom: 15 });
+                }
+            })();
+            </text>
+        }
+    </script>
 </body>
 </html>
